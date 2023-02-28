@@ -1,9 +1,10 @@
+require('dotenv').config()
 const express = require('express');
 const { expressLogger } = require('./utils')
 const { fruitsRouter, fruits } = require('./routers');
 
 // --- standard setup ---
-const port = 3000;
+const port = process.env.DEFAULT_PORT || 5000;
 const app = express();
 
 // --- middleware ---
