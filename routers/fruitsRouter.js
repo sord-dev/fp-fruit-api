@@ -42,13 +42,11 @@ fruitsRouter.post("/", (req, res) => {
     const fruit = Fruit(body);
 
     const exists = fruitState.filter((fruit) => {
-        return fruit.name.toLowerCase() == fruit.name.toLowerCase()
+        return fruit.name.toLowerCase() == body.name.toLowerCase();
     })
 
-    if (exists.length > 0) {
+    if (exists.length === 0) {
         fruitState.push(fruit);
-
-        // fs.writeFileSync('fruits.json', JSON.stringify(fruitState))
 
         console.log('adding fruit')
         res.status(301).json(fruit);
