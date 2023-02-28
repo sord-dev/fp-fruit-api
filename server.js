@@ -2,21 +2,16 @@ require('dotenv').config()
 const express = require('express');
 const { expressLogger } = require('./utils')
 const { fruitsRouter, fruits } = require('./routers');
+const cors = require('cors')
 
 // --- standard setup ---
 const port = process.env.DEFAULT_PORT || 5000;
 const app = express();
 
-const allowCrossDomain = (req, res, next) => {
-    res.header(`Access-Control-Allow-Origin`, `example.com`);
-    res.header(`Access-Control-Allow-Methods`, `GET,PUT,POST,DELETE`);
-    res.header(`Access-Control-Allow-Headers`, `Content-Type`);
-    next();
-  };
 
 // --- middleware ---
 app.use(express.json());
-app.use(allowCrossDomain());
+app.use(cors());
 app.use(expressLogger)
 
 // --- routes ---
