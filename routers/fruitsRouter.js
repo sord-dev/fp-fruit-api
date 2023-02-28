@@ -1,7 +1,7 @@
 const express = require('express')
 const fruitsData = require('../fruits.json')
 const Fruit = require('../models/fruit')
-const fs = require('node:fs')
+// const fs = require('node:fs')
 const fruitsRouter = express.Router();
 
 // fill route state
@@ -48,7 +48,7 @@ fruitsRouter.post("/", (req, res) => {
     if (exists.length > 0) {
         fruitState.push(fruit);
 
-        fs.writeFileSync('fruits.json', JSON.stringify(fruitState))
+        // fs.writeFileSync('fruits.json', JSON.stringify(fruitState))
 
         console.log('adding fruit')
         res.status(301).json(fruit);
@@ -68,7 +68,7 @@ fruitsRouter.delete("/:id", (req, res) => {
         const i = fruitState.indexOf(JSONRes);
         const deleted = fruitState.splice(i, 1);
 
-        fs.writeFileSync('fruits.json', JSON.stringify(fruitState))
+        // fs.writeFileSync('fruits.json', JSON.stringify(fruitState))
         res.status(201)
         res.json({ deleted })
     } else {
