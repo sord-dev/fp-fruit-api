@@ -43,6 +43,8 @@ fruitsRouter.post("/", (req, res) => {
     const { body } = req;
     const fruit = Fruit(body);
 
+    console.log(fruit, body);
+
     const exists = fruitState.filter((fruit) => {
         return fruit.name.toLowerCase() == body.name.toLowerCase();
     })
@@ -53,7 +55,7 @@ fruitsRouter.post("/", (req, res) => {
         console.log('adding fruit')
         res.status(301).json(fruit);
     } else {
-        res.status(400).send('creation error - fruit already exists')
+        res.status(404).send('creation error - fruit already exists')
     }
 
 
