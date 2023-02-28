@@ -1,0 +1,19 @@
+{
+  "name": "fp-backend-fundimentals",
+  "version": "1.0.0",
+  "description": "",
+  "main": "server.js",
+  "scripts": {
+    "dev": "nodemon .",
+    "start": "node ."
+  },
+  "keywords": [],
+  "type": "commonjs",
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "express": "^4.18.2",
+    "nanoid": "^4.0.1",
+    "nodemon": "^2.0.20"
+  }
+}
