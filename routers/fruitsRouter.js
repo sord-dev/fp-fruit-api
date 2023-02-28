@@ -6,7 +6,9 @@ const fruitsRouter = express.Router();
 
 // fill route state
 const fruitState = [];
-fruitsData.forEach((fruit) => fruitState.push(fruit))
+fruitsData.forEach((fruit) => {
+    if (fruit.id) fruitState.push(fruit)
+})
 
 // get all fruits
 fruitsRouter.get('/', (req, res) => {
