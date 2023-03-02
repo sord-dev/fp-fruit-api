@@ -1,114 +1,88 @@
-const express = require('express')
-const fruitsData = require('../fruits.json')
-const Fruit = require('../models/fruit')
-// const fs = require('node:fs')
+const express = require("express");
+const fruitsData = require("../fruits.json");
+const Fruit = require("../models/fruit");
 const fruitsRouter = express.Router();
 
-// fill route state
-const fruitState = [];
-fruitsData.forEach((fruit) => {
-    if (fruit.id) fruitState.push(fruit)
-})
-
 // get all fruits
-fruitsRouter.get('/', (req, res) => {
-    res.status = 200;
-    res.json(fruitState)
-})
+fruitsRouter.get("/", (req, res) => {
+  res.status = 200;
+  res.json(fruitsData);
+});
 
 // get all names
-fruitsRouter.get('/names', (req, res) => {
-    const fruitNames = fruitState.map(fruit => fruit.name);
-    res.json(fruitNames);
-})
+fruitsRouter.get("/all/names", (req, res) => {
+  const fruitNames = fruitsData.map((fruit) => fruit.name);
+  res.json(fruitNames);
+});
 
 // get one fruit
-fruitsRouter.get('/:slug', (req, res) => {
-    const { slug } = req.params;
-    const JSONRes = fruitState.filter((fruit) => {
-        return fruit.name.toLowerCase() === slug.toLowerCase()
-    });
+fruitsRouter.get("/:slug", (req, res) => {
+  const { slug } = req.params;
 
-    if (JSONRes.length) {
-        res.status(200)
-        res.json(JSONRes[0])
-    } else {
-        res.status(404)
-        res.send('fruit not found.')
-    }
-})
+  // search for fruit
+  const findQuery = fruitsData.filter((fruit) => {
+    return fruit.name.toLowerCase() === slug.toLowerCase();
+  });
+
+  if (findQuery.length > 0) {
+    let fruit = findQuery[0];
+    res.status(200);
+    res.json(fruit);
+  } else {
+    res.status(404).json({ error: "fruit not found." });
+  }
+});
 
 // create one fruit
 fruitsRouter.post("/", (req, res) => {
-    const { body } = req;
-    const fruit = Fruit(body);
+  const { body } = req;
+  const fruit = Fruit(body);
 
-    console.log(fruit, body);
+  const exists = fruitsData.filter((fruit) => {
+    return fruit.name.toLowerCase() == body.name.toLowerCase();
+  });
 
-    const exists = fruitState.filter((fruit) => {
-        return fruit.name.toLowerCase() == body.name.toLowerCase();
-    })
-
-    if (exists.length === 0) {
-        fruitState.push(fruit);
-
-        console.log('adding fruit')
-        res.status(301).json(fruit);
-    } else {
-        res.status(404).send('creation error - fruit already exists')
-    }
-
-
-})
+  if (exists.length === 0) {
+    fruitsData.push(fruit);
+    res.status(301).json(fruit);
+  } else {
+    res.status(409).send({ error: "creation error - fruit already exists" });
+  }
+});
 
 // delete one fruit
 fruitsRouter.delete("/:id", (req, res) => {
-    const { id } = req.params;
-    const JSONRes = fruitState.filter((fruit) => fruit.id === Number(id))[0];
+  const { id } = req.params;
+  const findQuery = fruitsData.filter((fruit) => fruit.id == id)[0];
 
-    if (JSONRes) {
-        const i = fruitState.indexOf(JSONRes);
-        const deleted = fruitState.splice(i, 1);
+  if (findQuery.id) {
+    const fruit = findQuery;
+    const i = fruitsData.indexOf(fruit);
+    const deleted = fruitsData.splice(i, 1)[0];
 
-        // fs.writeFileSync('fruits.json', JSON.stringify(fruitState))
-        res.status(201)
-        res.json({ deleted })
-    } else {
-        res.status(404)
-        res.send('fruit not found.')
-    }
-})
-
+    res.status(202);
+    res.json({ deleted });
+  } else {
+    res.status(404);
+    res.send({ error: "fruit not found." });
+  }
+});
 
 // update fruit
+fruitsRouter.patch("/:id", (req, res) => {
+  const { body } = req;
+  const id = Number(req.params.id);
 
-// BROKEN - WILL CLEAR THE OBJECT AND MESS UP SEARCHING
+  const findQuery = fruitsData.filter((fruit) => fruit.id === id)[0];
 
-// fruitsRouter.patch('/:id', (req, res) => {
-//     const { body } = req;
-//     console.log(body);
-//     const id = Number(req.params.id);
+  if (findQuery.id) {
+    const i = fruitsData.indexOf(findQuery);
+    const newItem = { ...findQuery, ...body };
+    fruitsData[i] = newItem;
+    res.status(200).json({ findQuery, newItem });
+  } else {
+    res.status(404).send("fruit not found.");
+  }
+});
 
-//     const JSONRes = fruitState.filter((fruit) => fruit.id === id)[0];
-
-//     console.log(JSONRes);
-
-//     if (JSONRes) {
-//         const i = fruitState.indexOf(JSONRes);
-
-//         const newItem = {...fruitState[i], ...body}
-//         fruitState[i] = newItem;
-
-//         fs.writeFileSync('fruits.json', JSON.stringify(fruitState))
-
-//         res.status(200)
-//         res.json(newItem)
-//     } else {
-//         res.status(404)
-//         res.send('fruit not found.')
-//     }
-// })
-
-
-
-module.exports = { fruitsRouter, fruits: fruitState };
+module.exports = { fruitsRouter };
