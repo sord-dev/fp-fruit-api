@@ -1,7 +1,8 @@
 require('dotenv').config()
 const express = require('express');
 const { expressLogger } = require('./utils')
-const { fruitsRouter, fruits } = require('./routers');
+const { fruitsRouter } = require('./routers');
+const fruits = require('./fruits.json')
 const cors = require('cors')
 
 // --- standard setup ---
